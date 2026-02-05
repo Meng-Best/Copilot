@@ -40,8 +40,9 @@ class ToolUseHub:
                         param_request[param.name] = requestBody[param.name]
                         requestBody.pop(param.name)
 
-            # 创建包含 API 密钥的请求头
+            # 创建包含 API 密钥的请求头，没有该密钥无法使用相关系统
             headers = {"X-API-Key": sim_api_key}
+
             # 对于需要 JSON 请求体的请求，添加 content-type 头部
             if len(requestBody.keys()) > 0:
                 headers["content-type"] = "application/json"
@@ -57,7 +58,7 @@ class ToolUseHub:
                 else:
                     response = requests.request(tool.method.upper(), url, params=param_request,json=requestBody, headers=headers)
 
-            # 获取并记录剩余调用次数
+            # 获取并记录剩余调用次数，限制2000次
             remaining_calls = response.headers.get('X-Remaining-Calls', 'N/A')
             logger.info(f"API 调用成功，剩余调用次数: {remaining_calls}")
 
