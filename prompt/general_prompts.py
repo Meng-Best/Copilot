@@ -231,6 +231,7 @@ class PromptModelHub:
             return self.stop_label
 
         # Serialize prior tool calls into a single prompt context block.
+        # Build a flat context string for the model to summarize.
         index = 1
         apis = ""
         for tmp in context:
@@ -717,6 +718,8 @@ class PromptModelHub:
             Tuple[bool, str]: 任务是否完成，以及下个任务的描述；任务完成，则返回 self.stop_label。
         """
         x = answer.strip().split("\n")
+        # Assumes the model returns two lines: decision and reason.
+        # Assumes a two-line response; line 2 contains the next subtask when not "Yes".
         is_single_task = x[0]
 
         if "yes" in (is_single_task.split(":")[-1]).lower():
