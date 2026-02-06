@@ -185,6 +185,7 @@ class QwenModelPromptHub(PromptModelHub):
         if len(query) == 0:
             return self.stop_label
 
+        # Serialize prior tool calls into a single prompt context block.
         index = 1
         apis = ""
         for tmp in context:
