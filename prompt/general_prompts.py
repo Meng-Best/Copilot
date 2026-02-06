@@ -7,6 +7,7 @@ from entity import Parameter, Tool
 
 
 def find_outer_braces(text):
+    # Returns all brace pairs using a stack (includes nested pairs, not just the outermost).
     # 查找所有括号对列表
     brace_pairs = []
     stack = []
@@ -21,6 +22,7 @@ def find_outer_braces(text):
 
 
 def remove_unquoted_backslash(text):
+    # Strip backslashes outside quotes to avoid invalid-escape JSON fragments.
     # 删除不在引号内的反斜杠字符
     output_string = []
     in_quotes_double = False  # 是否双引号
@@ -228,6 +230,7 @@ class PromptModelHub:
         if len(query) == 0:
             return self.stop_label
 
+        # Serialize prior tool calls into a single prompt context block.
         index = 1
         apis = ""
         for tmp in context:
@@ -475,6 +478,7 @@ class PromptModelHub:
             tools_human2model[tool.name_for_human] = tool
             tools_model2human[tool.name_for_model] = tool
 
+        # Be tolerant to LLM output variants (extra lines, labels, or "Action:" prefixes).
         answers = answer_str.strip().split("\n")
         if len(answers) == 0:
             return self.stop_label
@@ -684,6 +688,7 @@ class PromptModelHub:
             answer = answer[:-len("```")].strip()
         try:
             # 从文本中提取JSON结构体
+            # LLM outputs may wrap JSON; attempt to parse any brace-delimited blocks.
             index_list = find_outer_braces(answer)
             if index_list:
                 for start_index, end_index in index_list:
