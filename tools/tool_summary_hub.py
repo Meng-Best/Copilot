@@ -22,10 +22,13 @@ class ToolSummaryHub:
 
     def __init__(self, model, temperature, top_p, api_url, api_key):
         self.LargeLanguageModel = LargeLanguageModel(api_url, api_key)
+
+        #调用模型公开的prompt模板
         if "qwen" in model:
             self.PromptModelHub = QwenModelPromptHub("")
         else:
             self.PromptModelHub = PromptModelHub("")
+
         self.model = model
         self.temperature = temperature
         self.top_p = top_p
