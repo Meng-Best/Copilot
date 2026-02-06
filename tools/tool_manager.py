@@ -331,6 +331,7 @@ class ToolManager:
     def test_milvus(self,ids):
         return self.milvus.get_all_entity(ids)
 
+    #工具排序
     def search_tools_with_rerank(self, query, top_k=20, final_top_n=5):
         """
         使用重排序模型进行工具搜索
