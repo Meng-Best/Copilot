@@ -19,7 +19,7 @@ class GenerateTaskHub:
     属性:
         LargeLanguageModel (LargeLanguageModel): 大语言模型实例，用于生成文本。
         PromptModelHub (PromptModelHub): 提示词模型中心实例，用于生成各种提示词。
-        model (str): 使用的语言模型名称。
+        model (str): 使用的语言模型名称。1
         temperature (float): 控制生成文本的随机性参数。
         top_p (float): 核采样的概率阈值。
     """

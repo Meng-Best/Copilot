@@ -36,8 +36,8 @@ class TaskManager:
 
     def update_task(self, task_id, nodes, edges, systemOutput, isSuccess, isEnd):
         try:
-            task = Task.objects.get(task_id=task_id)
-            if not task:
+            task = Task.objects(task_id=task_id).first()
+            if task is None:
                 logger.warning(f"任务[{task_id}]不存在")
                 return None
 
@@ -63,8 +63,8 @@ class TaskManager:
 
     def get_task_by_id(self, task_id):
         try:
-            task = Task.objects.get(task_id=task_id)
-            if not task:
+            task = Task.objects(task_id=task_id).first()
+            if task is None:
                 logger.warning(f"任务[{task_id}]不存在")
                 return None
             return task
