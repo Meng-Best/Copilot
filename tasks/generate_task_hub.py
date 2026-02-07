@@ -54,9 +54,15 @@ class GenerateTaskHub:
             tuple: 包含两个元素的元组，第一个元素 isSingleTask 为布尔值，表示是否为单任务；
             第二个元素 task_description 为字符串，表示生成的任务描述。
         """
+        if not query:
+            logger.warning("gen_root_task received empty query; skip model call.")
+            return False, None
         # 获取所有工具
         tools = self.ToolManager.get_raw_all_tools()
         prompt = self.PromptModelHub.gen_root_task_prompt(query, tools)
+        if not prompt:
+            logger.warning("gen_root_task prompt is empty; skip model call.")
+            return False, None
         task_description = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
         isSingleTask, task_description = self.PromptModelHub.post_process_gen_root_task(task_description)
         return isSingleTask, task_description
@@ -76,7 +82,13 @@ class GenerateTaskHub:
         返回:
             str: 参数生成或补齐任务的描述词。
         """
+        if not query:
+            logger.warning("gen_param_task received empty query; skip model call.")
+            return ""
         prompt = self.PromptModelHub.gen_param_task_prompt(query, params, missing_params)
+        if not prompt:
+            logger.warning("gen_param_task prompt is empty; skip model call.")
+            return ""
         task_description = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
         return task_description
 
@@ -97,14 +109,26 @@ class GenerateTaskHub:
             tuple: 包含两个元素的元组，第一个元素 flag 为布尔值或其他标识；
             第二个元素 task_description 为字符串，表示生成的子任务描述。
         """
+        if not query:
+            logger.warning("gen_from_context_task received empty query; skip model call.")
+            return False, None
         prompt = self.PromptModelHub.gen_subtask_context_prompt(query, apis)
+        if not prompt:
+            logger.warning("gen_from_context_task prompt is empty; skip model call.")
+            return False, None
         task_description = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
         flag, task_description = self.PromptModelHub.post_process_gen_subtask_task(task_description)
         logger.debug(f"基于上下文生成子任务时检查：任务完成？{flag}；后续任务描述：{task_description}")
         return flag, task_description
 
     def gen_context_request_task(self, contexts):
+        if not contexts:
+            logger.warning("gen_context_request_task received empty contexts; skip model call.")
+            return ""
         prompt = self.PromptModelHub.gen_context_request(contexts)
+        if not prompt:
+            logger.warning("gen_context_request_task prompt is empty; skip model call.")
+            return ""
         user_request = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
                                                                 self.top_p)
         return user_request
@@ -114,6 +138,9 @@ class GenerateTaskHub:
             return False, None
         else:
             prompt = self.PromptModelHub.judge_validate(query, tool, requestBody)
+            if not prompt:
+                logger.warning("gen_judge_task prompt is empty; skip model call.")
+                return False, None
             judge_result = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
                                                                     self.top_p)
             flag, reason = self.PromptModelHub.post_process_gen_judge_task(judge_result)
@@ -140,7 +167,18 @@ if __name__ == "__main__":
     # apiPlanningHub = ApiPlanningHub(uri, model_path, db_name, model, temperature, top_p, host, db, port, topK, base_url,
     #                                 api_key)
     toolManager = ToolManager('localhost', "tools", 27017, milvus_uri, milvus_db_name)
-    generateTaskHub = GenerateTaskHub(model, temperature, top_p, base_url, api_key)
+    generateTaskHub = GenerateTaskHub(
+        model,
+        temperature,
+        top_p,
+        base_url,
+        api_key,
+        mongo_host,
+        mongo_db,
+        mongo_port,
+        milvus_uri,
+        milvus_db_name,
+    )
 
     tool = toolManager.get_tools_by_ids([15])[0]
     x1, reason1 = generateTaskHub.gen_judge_task("请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单", tool,
