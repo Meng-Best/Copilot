@@ -375,7 +375,7 @@ class ApiPlanningHub:
 
             # 任务标注已完成但任务描述不为空，处理剩余任务
             if task_description is not None:
-                loop_validate_result,single_task_result = process_mul_task_api_invoke()
+                loop_validate_result, single_task_result = process_mul_task_api_invoke(task_description)
                 if single_task_result["code"] == TASK_ERROR_CODE:
                     return api_chain, single_task_result["task_description"]
                 if not loop_validate_result:
