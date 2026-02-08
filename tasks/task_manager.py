@@ -45,7 +45,7 @@ class TaskManager:
                 task.status = -1
             else:
                 task.status = task.status + 1
-                task.isSuccess = "任务实时执行调用情况"
+                task.isSuccess = str(isSuccess) if isSuccess else "任务实时执行调用情况"
 
             task.nodes = nodes
             task.edges = edges
