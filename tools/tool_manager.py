@@ -1,5 +1,6 @@
 import json
 import time
+import json
 from typing import List
 
 from mongoengine import *
@@ -106,7 +107,7 @@ class ToolManager:
     def get_next_tool_id(self):
         db = self.mongoClient[self.db_name]
         # 使用findAndModify原子操作
-        counter = db.mongoClient.counters.find_one_and_update(
+        counter = db.counters.find_one_and_update(
             {"_id": "tool_id"},
             {"$inc": {"sequence_value": 1}},
             upsert=True,
@@ -129,9 +130,7 @@ class ToolManager:
         工具缓存清除方法。该方法清除工具缓存中的所有工具。
         """
         with self.cache_lock:
-            tool_ids = self.tool_cache.keys()
-            for tool_id in tool_ids:
-                self.tool_cache.pop(tool_id, None)
+            self.tool_cache.clear()
 
 
     def get_tools_by_ids_from_mongo(self, tool_ids: List[int]):
