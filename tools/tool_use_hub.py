@@ -31,6 +31,8 @@ class ToolUseHub:
             url = f"{tool.api_url}{tool.path}"
             logger.info(f"准备调用工具[{url}：{requestBody}]....")
             param_request = {}
+            # Avoid mutating caller-supplied params.
+            requestBody = dict(requestBody)
             for param in tool.request_body:
                 if param.name in requestBody:
                     if param.in_ == "path":
