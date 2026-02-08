@@ -1,9 +1,7 @@
 import uuid
 from mongoengine import *
-import threading
-from cachetools import TTLCache
 
-from entity import Parameter, Tool, Task
+from entity import Task
 from utils import logger
 import traceback
 
@@ -16,7 +14,6 @@ class TaskManager:
     """
     def __init__(self, mongo_host, mongo_db, mongo_port):
         self.mongoClient = connect(mongo_db, host=mongo_host, port=mongo_port)
-        self.cache_lock = threading.Lock()
 
     def create_task(self):
         while True:
