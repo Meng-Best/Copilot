@@ -147,7 +147,7 @@ class ToolManager:
             try:
                 tool = Tool.objects.get(tool_id=tool_id)
                 tools.append(tool)
-            except:
+            except Exception:
                 logger.warning(f"工具 [ {tool_id} ] 不存在.")
                 continue
         return tools
@@ -196,7 +196,7 @@ class ToolManager:
             try:
                 tool = Tool.objects.get(operationId=operationId)
                 tools.append(tool)
-            except:
+            except Exception:
                 logger.info(f"User with id {operationId} does not exist.")
                 continue
         return tools
