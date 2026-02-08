@@ -148,7 +148,10 @@ class ApiPlanningHub:
             return None, None, None
 
         if len(single_tool_response.text) != 0:
-            results = json.loads(single_tool_response.text)
+            try:
+                results = json.loads(single_tool_response.text)
+            except json.JSONDecodeError:
+                return None, None, None
 
             if isinstance(results, list) and len(results) != 0:
                 results = results[0]
