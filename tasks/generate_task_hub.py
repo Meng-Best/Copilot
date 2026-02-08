@@ -63,8 +63,15 @@ class GenerateTaskHub:
         if not prompt:
             logger.warning("gen_root_task prompt is empty; skip model call.")
             return False, None
-        task_description = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
-        isSingleTask, task_description = self.PromptModelHub.post_process_gen_root_task(task_description)
+        model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
+        try:
+            isSingleTask, task_description = self.PromptModelHub.post_process_gen_root_task(model_output)
+        except Exception as e:
+            logger.error(f"gen_root_task post_process failed: {e}\n{traceback.format_exc()}")
+            normalized = (model_output or "").lower()
+            if "no" in normalized and "yes" not in normalized:
+                return False, query
+            return True, None
         return isSingleTask, task_description
 
 
@@ -116,8 +123,12 @@ class GenerateTaskHub:
         if not prompt:
             logger.warning("gen_from_context_task prompt is empty; skip model call.")
             return False, None
-        task_description = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
-        flag, task_description = self.PromptModelHub.post_process_gen_subtask_task(task_description)
+        model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
+        try:
+            flag, task_description = self.PromptModelHub.post_process_gen_subtask_task(model_output)
+        except Exception as e:
+            logger.error(f"gen_from_context_task post_process failed: {e}\n{traceback.format_exc()}")
+            return True, None
         logger.debug(f"基于上下文生成子任务时检查：任务完成？{flag}；后续任务描述：{task_description}")
         return flag, task_description
 
@@ -143,7 +154,11 @@ class GenerateTaskHub:
                 return False, None
             judge_result = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
                                                                     self.top_p)
-            flag, reason = self.PromptModelHub.post_process_gen_judge_task(judge_result)
+            try:
+                flag, reason = self.PromptModelHub.post_process_gen_judge_task(judge_result)
+            except Exception as e:
+                logger.error(f"gen_judge_task post_process failed: {e}\n{traceback.format_exc()}")
+                return False, None
             return flag, reason
 
 
