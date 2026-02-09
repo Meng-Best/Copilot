@@ -18,6 +18,7 @@ from entity import Parameter, Tool
 from models.qwen_reranker_model import get_qwen_reranker_instance
 import os
 from mongoengine import connect, disconnect, get_connection
+from pymongo import ReturnDocument
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -111,7 +112,7 @@ class ToolManager:
             {"_id": "tool_id"},
             {"$inc": {"sequence_value": 1}},
             upsert=True,
-            return_document=True
+            return_document=ReturnDocument.AFTER
         )
         return counter["sequence_value"]
 

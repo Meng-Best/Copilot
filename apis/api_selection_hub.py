@@ -89,6 +89,9 @@ class ApiSelectionHub:
             #     model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
             #     final_tool = self.PromptModelHub.post_process_tool_selection_result(model_output, tools)
 
+            if final_tool is None:
+                logger.warning(f"查询: [{query}] 未能选择到合适工具")
+                return None
             logger.info(f"查询: [{query}]被选择工具 : [{final_tool.tool_id}] {final_tool.operationId}-{final_tool.name_for_human}")
         except Exception as e:
             logger.error(f"检索并选择工具[{query}：{required_argument}]失败: {e}\n{traceback.format_exc()}")
