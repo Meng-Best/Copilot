@@ -64,7 +64,7 @@ class ToolSummaryHub:
                                                                                chunk_result=chunk)
                         model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
                                                                                 self.top_p)
-                        print(model_output)
+                        logging.info(model_output)
                         node_results += model_output
                     tmp["result"] = node_results
             return apis

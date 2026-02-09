@@ -41,7 +41,7 @@ class ApiPlanningHub:
 
     def generate_output(self, text):
         prompt = " 请将以下句子进行润色成通顺的话，请直接输出结果：\n\n\n" + text
-        print(prompt)
+        logger.info(prompt)
         result = self.llm.chat_completions(prompt, self.model, self.temperature, self.top_p)
         return result
 
