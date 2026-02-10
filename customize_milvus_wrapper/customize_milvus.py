@@ -178,6 +178,8 @@ class CustomizeMilvus:
         返回:
             list: 包含文档 ID 的列表。
         """
+        if not query:
+            return []
         self.load_collection_into_memory(collection_name)
         query_embedding = self.embeddingModel.get_embedding(query)
         response = self.client.search(
