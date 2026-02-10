@@ -100,4 +100,4 @@ class ToolSummaryHub:
 
 
 if __name__ == "__main__":
-    logging.info()
+    logging.info("ToolSummaryHub module loaded.")
