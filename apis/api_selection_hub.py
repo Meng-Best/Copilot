@@ -58,14 +58,16 @@ class ApiSelectionHub:
 
             if required_argument is None:
                 prompt = self.PromptModelHub.gen_tool_selection_prompt(query, vector_search_tools)
-                model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
-                                                                        self.top_p)
-                final_tool = self.PromptModelHub.post_process_tool_selection_result(model_output, vector_search_tools)
             else:
-                prompt = self.PromptModelHub.gen_required_argument_tool_selection_prompt(query, required_argument,vector_search_tools)
-                model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
-                                                                        self.top_p)
-                final_tool = self.PromptModelHub.post_process_tool_selection_result(model_output, vector_search_tools)
+                prompt = self.PromptModelHub.gen_required_argument_tool_selection_prompt(
+                    query, required_argument, vector_search_tools
+                )
+            if not prompt:
+                logger.warning(f"[向量检索] 查询: {query} 生成的工具选择 prompt 为空")
+                return None
+            model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature,
+                                                                    self.top_p)
+            final_tool = self.PromptModelHub.post_process_tool_selection_result(model_output, vector_search_tools)
 
             # # 使用重排序模型对候选工具进行重排序（增加返回数量）
             # reranked_tools = self.ToolManager.search_tools_with_rerank(query, top_k=topK * 2, final_top_n=topK)
