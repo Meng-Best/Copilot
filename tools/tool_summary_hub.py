@@ -86,8 +86,14 @@ class ToolSummaryHub:
                 3. 打印模型输出。
                 4. 返回模型输出。
             """
+        if not query:
+            logging.warning("tool_summary received empty query; skip model call.")
+            return ""
         apis = self.summary_large_result(query, apis)
         prompt = self.PromptModelHub.gen_tool_summary_prompt(query, apis)
+        if not prompt:
+            logging.warning("tool_summary prompt is empty; skip model call.")
+            return ""
         model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
         logging.info(model_output)
         return model_output
