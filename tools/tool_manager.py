@@ -367,6 +367,11 @@ if __name__ == "__main__":
     # logger.info(f"tool_id: {tools[0].tool_id}, tool_name: {tools[0].name_for_human}")
 
     operation_tools = toolManager.get_tools_by_operationIds(["getByProductId"])
-    logger.info(f"Operation tool_id: {operation_tools[0].tool_id}, tool_name: {operation_tools[0].name_for_human}")
+    if operation_tools:
+        logger.info(
+            f"Operation tool_id: {operation_tools[0].tool_id}, tool_name: {operation_tools[0].name_for_human}"
+        )
+    else:
+        logger.warning("No tools found for operationId getByProductId.")
     # toolManager.delete_all_tools()
     # upload_file("../api_data/dataset_apis.json")
