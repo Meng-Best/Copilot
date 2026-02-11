@@ -76,6 +76,9 @@ class ToolUseHub:
 if __name__ == "__main__":
     toolUseHub = ToolUseHub("test")
     toolManager = ToolManager('localhost', "tools", 27017,"http://127.0.0.1:19530","tool_db")
-    tool = toolManager.get_tools_by_ids([15])[0]
-    response = toolUseHub.tool_use(tool, {"productId": 2})
-    logger.info(response)
+    tools = toolManager.get_tools_by_ids([15])
+    if not tools:
+        logger.warning("No tool found for id 15.")
+    else:
+        response = toolUseHub.tool_use(tools[0], {"productId": 2})
+        logger.info(response)
