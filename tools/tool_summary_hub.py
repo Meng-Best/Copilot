@@ -43,6 +43,8 @@ class ToolSummaryHub:
         return [s[i:i + length] for i in range(0, len(s), length)]
 
     def summary_large_result(self, query, apis):
+        if not apis:
+            return []
         flag = True
         for tmp in apis:
             if len(tmp["result"]) <= 100000:
