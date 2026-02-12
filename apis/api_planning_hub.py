@@ -352,6 +352,9 @@ class ApiPlanningHub:
         raw_query = query
         api_chain = []
         is_single_task, root_task_description = self.generateTaskHub.gen_root_task(query)
+        if root_task_description is None and not is_single_task:
+            logger.warning(f"[{query}]根任务解析失败，降级为单任务处理")
+            is_single_task = True
         logger.info(f"[{query}]任务是否单任务:{is_single_task},当前任务描述为：{root_task_description}")
         if is_single_task:
             single_task_result = process_single_api_invoke(query)
