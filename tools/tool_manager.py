@@ -251,12 +251,14 @@ class ToolManager:
                         param_description = param["description"]
                         in_ = param["in"]
                         # logging.info(requestParams[param])
-                        if param["schema"]["type"] == "string":
+                        schema = param.get("schema", {})
+                        schema_type = schema.get("type")
+                        if schema_type == "string":
                             paramType = "string"
-                        elif param["schema"]["type"] == "array":
+                        elif schema_type == "array":
                             paramType = "array"
                         else:
-                            paramType = param["schema"]["format"]
+                            paramType = schema.get("format", schema_type)
                         enum = []
                         if "enum" in param["schema"]:
                             enum = param["schema"]["enum"]
@@ -282,22 +284,24 @@ class ToolManager:
                         # logging.info(requestParams[param])
                         param_description = requestParams[param]["description"]
                         # logging.info(requestParams[param])
-                        if requestParams[param]["type"] == "string":
+                        param_schema = requestParams[param]
+                        param_type = param_schema.get("type")
+                        if param_type == "string":
                             paramType = "string"
-                        elif requestParams[param]["type"] == "array":
+                        elif param_type == "array":
                             paramType = "array"
                         else:
-                            paramType = requestParams[param]["format"]
+                            paramType = param_schema.get("format", param_type)
                         enum = []
-                        if "enum" in requestParams[param]:
-                            enum = requestParams[param]["enum"]
-                        if "format" in requestParams[param]:
-                            format = requestParams[param]["format"]
+                        if "enum" in param_schema:
+                            enum = param_schema["enum"]
+                        if "format" in param_schema:
+                            fmt = param_schema["format"]
                         else:
-                            format = paramType
+                            fmt = paramType
 
                         if len(enum) != 0:
-                            format = "enum"
+                            fmt = "enum"
 
                         required = True
                         parameter = Parameter(
@@ -306,7 +310,7 @@ class ToolManager:
                             description=param_description,
                             enum=enum,
                             required=required,
-                            format=format,
+                            format=fmt,
                             in_="requestBody"
                         )
                         params.append(parameter)
