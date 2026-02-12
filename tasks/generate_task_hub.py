@@ -195,18 +195,32 @@ if __name__ == "__main__":
         milvus_db_name,
     )
 
-    tool = toolManager.get_tools_by_ids([15])[0]
-    x1, reason1 = generateTaskHub.gen_judge_task("请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单", tool,
-                                                 {"quantity": 10, "supplierId": 1, "productId": 1, "orderRegion": "北京"})
+    tools = toolManager.get_tools_by_ids([15])
+    if not tools:
+        logger.warning("No tool found for id 15.")
+    else:
+        tool = tools[0]
+        x1, reason1 = generateTaskHub.gen_judge_task(
+            "请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单",
+            tool,
+            {"quantity": 10, "supplierId": 1, "productId": 1, "orderRegion": "北京"},
+        )
 
-    x2, reason2 = generateTaskHub.gen_judge_task("请创建一个订单，该订单的产品ID为1，数量为-10，供应商Id为1,配送区域为北京的订单", tool,
-                                                 {"quantity": -10, "supplierId": 1, "productId": 1, "orderRegion": "北京"})
+        x2, reason2 = generateTaskHub.gen_judge_task(
+            "请创建一个订单，该订单的产品ID为1，数量为-10，供应商Id为1,配送区域为北京的订单",
+            tool,
+            {"quantity": -10, "supplierId": 1, "productId": 1, "orderRegion": "北京"},
+        )
 
+        x3, reason3 = generateTaskHub.gen_judge_task(
+            "请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单",
+            tool,
+            {"quantity": 10, "supplierId": 1, "productId": 1, "orderRegion": ""},
+        )
 
-    x3, reason3 = generateTaskHub.gen_judge_task("请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单", tool,
-                                                 {"quantity": 10, "supplierId": 1, "productId": 1, "orderRegion": ""})
-
-
-    x4, reason4 = generateTaskHub.gen_judge_task("请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单", tool,
-                                                 {"quantity": 10, "supplierId": 1, "productId": 1})
+        x4, reason4 = generateTaskHub.gen_judge_task(
+            "请创建一个订单，该订单的产品ID为1，数量为10，供应商Id为1,配送区域为北京的订单",
+            tool,
+            {"quantity": 10, "supplierId": 1, "productId": 1},
+        )
 
