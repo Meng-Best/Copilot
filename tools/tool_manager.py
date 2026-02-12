@@ -219,7 +219,12 @@ class ToolManager:
             schemas = data["components"]["schemas"]
 
         tools = []
-        url = data["servers"][0]["url"]
+        servers = data.get("servers", [])
+        if not servers:
+            raise ValueError("OpenAPI servers list is empty.")
+        url = servers[0].get("url")
+        if not url:
+            raise ValueError("OpenAPI server url is missing.")
         index = 0
         for path in data["paths"]:
             for method in data["paths"][path]:
