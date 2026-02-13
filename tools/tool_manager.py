@@ -355,13 +355,15 @@ class ToolManager:
         candidate_tool_ids = self.milvus.get_docs("tools", query, topk=top_k)
         # 2. 从MongoDB获取候选工具详细信息
         candidate_tools = self.get_tools_by_ids(candidate_tool_ids)
+        if not candidate_tools:
+            return []
         # 3. 准备重排序的文本
         candidates_for_rerank = [f"{tool.name_for_human}: {tool.description}" for tool in candidate_tools]
         # 4. 重排序
         reranked_indices = self.reranker.rerank(query, candidates_for_rerank)
         # 5. 根据重排序结果整理最终工具列表
         final_tools = [candidate_tools[i] for i in reranked_indices]
-        
+
         return final_tools[:final_top_n]
 
 if __name__ == "__main__":
