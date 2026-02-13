@@ -726,7 +726,7 @@ def _process_task(task_id, data):
                 results = llm.context_chat_completions(contexts, curr_model_name, curr_temperature, model_top_p, contextNumber)
             else:
                 results = llm.chat_completions(query, curr_model_name, curr_temperature,model_top_p)
-        except:
+        except Exception:
             results = ""
         if results is not None and len(results) != 0:
             taskManager.update_task(task_id, [], [], results, "", True)
