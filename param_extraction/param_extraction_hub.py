@@ -69,14 +69,14 @@ class ParamExtractionHub:
                             extractionParam[target_param.name], int):
                         try:
                             extractionParam[target_param.name] = int(extractionParam[target_param.name])
-                        except:
+                        except Exception:
                             extractionParam[target_param.name] = ""
                             missing_param.append(target_param)
                             logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
                     if target_param.type == "double" and not isinstance(extractionParam[target_param.name], float):
                         try:
                             extractionParam[target_param.name] = float(extractionParam[target_param.name])
-                        except:
+                        except Exception:
                             extractionParam[target_param.name] = ""
                             missing_param.append(target_param)
                             logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
