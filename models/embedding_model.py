@@ -106,7 +106,7 @@ class EmbeddingModel:
         result_docs = []
         for i in sorted_indices:
             if cosine_similarities[i] > threshold:
-                result_docs.append(sentences)
+                result_docs.append(sentences[i])
         if recall_num == -1:
             return result_docs
         if len(result_docs) > recall_num:
