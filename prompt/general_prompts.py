@@ -717,14 +717,17 @@ class PromptModelHub:
         返回:
             Tuple[bool, str]: 任务是否完成，以及下个任务的描述；任务完成，则返回 self.stop_label。
         """
+        if not answer:
+            return True, self.stop_label
         x = answer.strip().split("\n")
-        # Assumes the model returns two lines: decision and reason.
         # Assumes a two-line response; line 2 contains the next subtask when not "Yes".
         is_single_task = x[0]
 
         if "yes" in (is_single_task.split(":")[-1]).lower():
             return True, self.stop_label
         else:
+            if len(x) < 2:
+                return False, self.stop_label
             root_task_description = x[1].split(":")[-1]
             return False, root_task_description
 
@@ -748,9 +751,13 @@ class PromptModelHub:
         #     return False, root_task_description
 
     def post_process_gen_judge_task(self, answer: str):
+        if not answer:
+            return False, None
         x = answer.strip().split("\n")
 
         is_single_task = x[0]
+        if len(x) < 2:
+            return False, None
         reason = x[1].strip()
         reason = reason.replace('Reason:', '')
 
