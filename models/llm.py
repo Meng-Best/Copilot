@@ -54,6 +54,8 @@ class LargeLanguageModel:
                     # 设置核采样参数，控制输出的多样性
                     top_p=top_p
                 )
+                if not response.choices:
+                    raise ValueError("Empty choices in LLM response")
                 # 获取响应中第一条选择的消息内容
                 message_content = response.choices[0].message.content
                 # 返回消息内容
@@ -81,6 +83,8 @@ class LargeLanguageModel:
                     # 设置核采样参数，控制输出的多样性
                     top_p=top_p
                 )
+                if not response.choices:
+                    raise ValueError("Empty choices in LLM response")
                 # 获取响应中第一条选择的消息内容，返回消息内容
                 return response.choices[0].message.content
             except Exception as err:
