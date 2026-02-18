@@ -101,7 +101,18 @@ class ParamExtractionHub:
         """
         request_body = tool.request_body
 
+        if not query:
+            logger.warning("extraction_params received empty query; skip model call.")
+            results = {}
+            missing_param = self.validate_params(tool, results)
+            return results, missing_param
+
         prompt = self.PromptModelHub.gen_get_all_parameters_prompt(query, request_body)
+        if not prompt:
+            logger.warning("extraction_params prompt is empty; skip model call.")
+            results = {}
+            missing_param = self.validate_params(tool, results)
+            return results, missing_param
         model_output = self.LargeLanguageModel.chat_completions(prompt, self.model, self.temperature, self.top_p)
         results = self.PromptModelHub.post_process_get_all_parameter_result(model_output, tool)
         missing_param = self.validate_params(tool, results)
