@@ -241,17 +241,17 @@ class ToolManager:
                         break
                 if not operationId:
                     operationId = api_information.get("operationId") or f"{method}_{index}"
-                name_for_human = api_information["summary"]
+                name_for_human = api_information.get("summary") or api_information.get("operationId") or operationId
                 name_for_model = "tool" + str(index)
 
-                description = api_information["description"]
+                description = api_information.get("description", "")
                 params = []
                 if "parameters" in api_information:
                     requestParams = api_information["parameters"]
                     for param in requestParams:
                         param_name = param["name"]
                         # logging.info(requestParams[param])
-                        param_description = param["description"]
+                        param_description = param.get("description", "")
                         in_ = param["in"]
                         # logging.info(requestParams[param])
                         schema = param.get("schema", {})
@@ -279,13 +279,21 @@ class ToolManager:
                         params.append(parameter)
 
                 if "requestBody" in api_information:
-                    requestBody = \
-                        api_information["requestBody"]["content"]["application/json"]["schema"]["$ref"].split('/')[-1]
-                    requestParams = schemas[requestBody]["properties"]
+                    request_body_schema = (
+                        api_information.get("requestBody", {})
+                        .get("content", {})
+                        .get("application/json", {})
+                        .get("schema", {})
+                    )
+                    request_body_ref = request_body_schema.get("$ref")
+                    if not request_body_ref:
+                        continue
+                    requestBody = request_body_ref.split('/')[-1]
+                    requestParams = schemas.get(requestBody, {}).get("properties", {})
                     for param in requestParams:
                         param_name = param
                         # logging.info(requestParams[param])
-                        param_description = requestParams[param]["description"]
+                        param_description = requestParams[param].get("description", "")
                         # logging.info(requestParams[param])
                         param_schema = requestParams[param]
                         param_type = param_schema.get("type")
