@@ -153,7 +153,9 @@ class ApiPlanningHub:
             except json.JSONDecodeError:
                 return None, None, None
 
-            if isinstance(results, list) and len(results) != 0:
+            if isinstance(results, list):
+                if not results:
+                    return None, None, None
                 results = results[0]
             if missing_param in results:
                 return results[missing_param], tool.name_for_human, {
