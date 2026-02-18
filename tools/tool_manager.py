@@ -263,8 +263,8 @@ class ToolManager:
                         else:
                             paramType = schema.get("format", schema_type)
                         enum = []
-                        if "enum" in param["schema"]:
-                            enum = param["schema"]["enum"]
+                        if "enum" in schema:
+                            enum = schema["enum"]
 
                         required = True
                         parameter = Parameter(
