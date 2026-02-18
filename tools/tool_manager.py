@@ -231,6 +231,7 @@ class ToolManager:
                 index += 1
                 api_information = data["paths"][path][method]
                 operationIds = path.split('/')
+                operationId = None
                 for i in range(len(operationIds)):
                     if "{" in operationIds[len(operationIds) - 1 - i] and "}" in operationIds[
                         len(operationIds) - 1 - i]:
@@ -238,6 +239,8 @@ class ToolManager:
                     else:
                         operationId = operationIds[len(operationIds) - 1 - i]
                         break
+                if not operationId:
+                    operationId = api_information.get("operationId") or f"{method}_{index}"
                 name_for_human = api_information["summary"]
                 name_for_model = "tool" + str(index)
 
