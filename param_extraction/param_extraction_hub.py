@@ -57,29 +57,30 @@ class ParamExtractionHub:
         """
         missing_param = []
         for target_param in tool.request_body:
-            if target_param.name not in extractionParam and target_param.required:
+            if target_param.name not in extractionParam:
+                if target_param.required:
+                    missing_param.append(target_param)
+                    logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
+                continue
+            if isinstance(extractionParam[target_param.name], str) and len(extractionParam[target_param.name]) == 0:
                 missing_param.append(target_param)
                 logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
             else:
-                if isinstance(extractionParam[target_param.name], str) and len(extractionParam[target_param.name]) == 0:
-                    missing_param.append(target_param)
-                    logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
-                else:
-                    if (target_param.type == "int64" or target_param.type == "int32") and not isinstance(
-                            extractionParam[target_param.name], int):
-                        try:
-                            extractionParam[target_param.name] = int(extractionParam[target_param.name])
-                        except Exception:
-                            extractionParam[target_param.name] = ""
-                            missing_param.append(target_param)
-                            logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
-                    if target_param.type == "double" and not isinstance(extractionParam[target_param.name], float):
-                        try:
-                            extractionParam[target_param.name] = float(extractionParam[target_param.name])
-                        except Exception:
-                            extractionParam[target_param.name] = ""
-                            missing_param.append(target_param)
-                            logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
+                if (target_param.type == "int64" or target_param.type == "int32") and not isinstance(
+                        extractionParam[target_param.name], int):
+                    try:
+                        extractionParam[target_param.name] = int(extractionParam[target_param.name])
+                    except Exception:
+                        extractionParam[target_param.name] = ""
+                        missing_param.append(target_param)
+                        logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
+                if target_param.type == "double" and not isinstance(extractionParam[target_param.name], float):
+                    try:
+                        extractionParam[target_param.name] = float(extractionParam[target_param.name])
+                    except Exception:
+                        extractionParam[target_param.name] = ""
+                        missing_param.append(target_param)
+                        logger.debug(f"已添加[{tool.tool_id} - {tool.operationId}] 缺失参数：{target_param.name}")
         return missing_param
 
 
@@ -125,6 +126,9 @@ if __name__ == "__main__":
     base_url = os.getenv("base_url", "")
     paramExtractionHub = ParamExtractionHub(model=model, temperature=0.67, top_p=0.95,api_url=base_url,api_key=api_key)
     toolManager = ToolManager(mongo_host, mongo_db, mongo_port, milvus_uri, milvus_db_name)
-    tool = toolManager.get_tools_by_ids([5])[0]
-    results, missing_param = paramExtractionHub.extraction_params("请帮我查询名为苹果的产品的情况", tool)
-    logger.info(f"{results}，{missing_param}")
+    tools = toolManager.get_tools_by_ids([5])
+    if not tools:
+        logger.warning("No tool found for id 5.")
+    else:
+        results, missing_param = paramExtractionHub.extraction_params("请帮我查询名为苹果的产品的情况", tools[0])
+        logger.info(f"{results}，{missing_param}")
