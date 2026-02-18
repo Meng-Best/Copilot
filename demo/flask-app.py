@@ -66,6 +66,8 @@ def mesh_query():
                 {'role': 'user', 'content': content}
             ]
         )
+        if not completion.choices:
+            return jsonify({'message': 'Empty response from model'}), 502
         response_text = completion.choices[0].message.content.strip()
         return {"message":response_text}
 
