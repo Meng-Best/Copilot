@@ -252,7 +252,7 @@ class ToolManager:
                         param_name = param["name"]
                         # logging.info(requestParams[param])
                         param_description = param.get("description", "")
-                        in_ = param["in"]
+                        in_ = param.get("in", "query")
                         # logging.info(requestParams[param])
                         schema = param.get("schema", {})
                         schema_type = schema.get("type")
