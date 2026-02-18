@@ -39,6 +39,8 @@ class RemoteEmbeddingModel:
             3. 返回提取的嵌入向量。
         """
         response = self.openai_client.embeddings.create(model="text-embedding-v3", input=text)
+        if not response.data:
+            raise ValueError("Empty embeddings response")
         embeddings = response.data[0].embedding
         return embeddings
 
@@ -61,7 +63,7 @@ class RemoteEmbeddingModel:
                 model="text-embedding-v3",
                 input=batch_texts
             )
-            embeddings = response.data
+            embeddings = response.data or []
             for tmp in embeddings:
                 all_embeddings.append(tmp.embedding)
 
