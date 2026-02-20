@@ -2,6 +2,7 @@ import json
 import time
 from typing import List
 from mongoengine import *
+from pymongo import ReturnDocument
 import threading
 from entity import User
 from cachetools import TTLCache
@@ -54,7 +55,7 @@ class UserManagerHub:
             {"_id": "user_id"},
             {"$inc": {"sequence_value": 1}},
             upsert=True,
-            return_document=True
+            return_document=ReturnDocument.AFTER
         )
         return counter["sequence_value"]
 

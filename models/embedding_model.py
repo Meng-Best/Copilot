@@ -40,6 +40,8 @@ class EmbeddingModel:
 
     @timing_decorator
     def get_batch_embeddings(self, texts, batch_size=128):
+        if not texts:
+            return []
         all_embeddings = []
         chunk_id = 0
         total_chunks = math.ceil(len(texts) / 10)
@@ -96,6 +98,8 @@ class EmbeddingModel:
     @timing_decorator
     def get_similarity(self, sentences: List[str], source_sentence: str, recall_num: int = -1,
                        threshold: float = 0):
+        if not sentences or not source_sentence:
+            return []
         text_embeddings = self.similarity_model.encode(sentences)
         query_embedding = self.similarity_model.encode(source_sentence)
 
