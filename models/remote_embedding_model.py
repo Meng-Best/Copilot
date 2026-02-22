@@ -95,6 +95,17 @@ class RemoteEmbeddingModel:
             5. 按相似度降序排序。
             6. 返回相似文本列表。
         """
+        if target_texts is None or vectors is None or query is None:
+            return []
+        if len(target_texts) == 0 or len(vectors) == 0:
+            return []
+        if len(target_texts) != len(vectors):
+            return []
+        try:
+            if len(query) == 0:
+                return []
+        except TypeError:
+            return []
         query = np.array(query)
         vectors = np.array(vectors)
 
