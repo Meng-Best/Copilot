@@ -170,7 +170,7 @@ def delete_tool_db():
         """
 
     toolManager.delete_all_tools()
-    return jsonify({'message': 'delete tool success! '}), RESPONSE_STATUS_CODE_SUCCESS
+    return jsonify({'message': 'insert tool success! '}), RESPONSE_STATUS_CODE_SUCCESS
 
 
 @app.route('/insert_tool', methods=['POST'])
