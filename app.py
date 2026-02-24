@@ -260,11 +260,30 @@ def insert_tool():
     """
 
     data = request.get_json()
-    if not data or 'task_id' not in data:
+    if not data:
         return jsonify({'error': 'Missing query parameter'}), 400
 
+    params_payload = data.get("params")
+    if params_payload is None:
+        return jsonify({'error': 'Missing params'}), 400
+    if not isinstance(params_payload, list):
+        return jsonify({'error': 'Invalid params format'}), 400
+
+    required_fields = [
+        "operationId",
+        "name_for_human",
+        "name_for_model",
+        "description",
+        "url",
+        "path",
+        "method",
+    ]
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return jsonify({'error': f"Missing required fields: {', '.join(missing_fields)}"}), 400
+
     params = []
-    for tmp in data["params"]:
+    for tmp in params_payload:
         parameter = Parameter(
             name=tmp["param_name"],
             type=tmp["paramType"],
@@ -430,7 +449,7 @@ def login():
               example: "登录失败！请检查用户名和密码"
     """
     data = request.get_json()
-    if not data:
+    if not data or 'task_id' not in data:
         return jsonify({'error': 'Missing query parameter'}), 400
 
     required_fields = ["username", "password"]
