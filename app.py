@@ -433,6 +433,10 @@ def login():
     if not data:
         return jsonify({'error': 'Missing query parameter'}), 400
 
+    required_fields = ["username", "password"]
+    if not all(field in data for field in required_fields):
+        return jsonify({'message': '缺少必要的字段: username, password'}), 400
+
     userName = data["username"]
     password = data["password"]
     user = userManagerHub.login(userName, password)
