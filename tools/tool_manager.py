@@ -216,7 +216,7 @@ class ToolManager:
         # 读取 JSON 文件
         with open(filename, 'r', encoding='utf-8') as file:
             data = json.load(file)
-            schemas = data["components"]["schemas"]
+            schemas = data.get("components", {}).get("schemas", {})
 
         tools = []
         servers = data.get("servers", [])
