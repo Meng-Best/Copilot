@@ -219,6 +219,9 @@ class ToolManager:
             schemas = data.get("components", {}).get("schemas", {})
 
         tools = []
+        paths = data.get("paths", {})
+        if not paths:
+            raise ValueError("OpenAPI paths is empty.")
         servers = data.get("servers", [])
         if not servers:
             raise ValueError("OpenAPI servers list is empty.")
@@ -227,12 +230,12 @@ class ToolManager:
             raise ValueError("OpenAPI server url is missing.")
         index = 0
         allowed_methods = {"get", "post", "put", "delete", "patch", "options", "head", "trace"}
-        for path in data["paths"]:
-            for method in data["paths"][path]:
+        for path in paths:
+            for method in paths[path]:
                 if method.lower() not in allowed_methods:
                     continue
                 index += 1
-                api_information = data["paths"][path][method]
+                api_information = paths[path][method]
                 operationIds = path.split('/')
                 operationId = None
                 for i in range(len(operationIds)):
