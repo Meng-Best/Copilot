@@ -226,8 +226,11 @@ class ToolManager:
         if not url:
             raise ValueError("OpenAPI server url is missing.")
         index = 0
+        allowed_methods = {"get", "post", "put", "delete", "patch", "options", "head", "trace"}
         for path in data["paths"]:
             for method in data["paths"][path]:
+                if method.lower() not in allowed_methods:
+                    continue
                 index += 1
                 api_information = data["paths"][path][method]
                 operationIds = path.split('/')
