@@ -261,6 +261,8 @@ class ToolManager:
                         in_ = param.get("in", "query")
                         # logging.info(requestParams[param])
                         schema = param.get("schema", {})
+                        if "$ref" in schema:
+                            schema = schemas.get(schema["$ref"].split("/")[-1], schema)
                         schema_type = schema.get("type")
                         if schema_type == "string":
                             paramType = "string"
