@@ -272,7 +272,7 @@ class ToolManager:
                         if "enum" in schema:
                             enum = schema["enum"]
 
-                        required = True
+                        required = bool(param.get("required", False))
                         parameter = Parameter(
                             name=param_name,
                             type=paramType,
