@@ -292,10 +292,13 @@ class ToolManager:
                         .get("schema", {})
                     )
                     request_body_ref = request_body_schema.get("$ref")
-                    if not request_body_ref:
-                        continue
-                    requestBody = request_body_ref.split('/')[-1]
-                    requestParams = schemas.get(requestBody, {}).get("properties", {})
+                    if request_body_ref:
+                        requestBody = request_body_ref.split('/')[-1]
+                        body_schema = schemas.get(requestBody, {})
+                    else:
+                        body_schema = request_body_schema
+                    requestParams = body_schema.get("properties", {}) if isinstance(body_schema, dict) else {}
+                    required_fields = set(body_schema.get("required", [])) if isinstance(body_schema, dict) else set()
                     for param in requestParams:
                         param_name = param
                         # logging.info(requestParams[param])
@@ -320,7 +323,7 @@ class ToolManager:
                         if len(enum) != 0:
                             fmt = "enum"
 
-                        required = param_name in request_body_schema.get("required", [])
+                        required = param_name in required_fields
                         parameter = Parameter(
                             name=param_name,
                             type=paramType,
