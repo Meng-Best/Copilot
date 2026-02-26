@@ -320,7 +320,7 @@ class ToolManager:
                         if len(enum) != 0:
                             fmt = "enum"
 
-                        required = True
+                        required = param_name in request_body_schema.get("required", [])
                         parameter = Parameter(
                             name=param_name,
                             type=paramType,
