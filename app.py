@@ -601,6 +601,11 @@ responses:
         return jsonify({'error': 'Missing query parameter'}), 400
 
     ids = data['ids']
+    if not isinstance(ids, list):
+        return jsonify({'error': 'ids must be a list'}), 400
+    if not all(isinstance(item, int) for item in ids):
+        return jsonify({'error': 'ids must be a list of integers'}), 400
+
     toolManager.delete_tools(ids)
     logger.info(f"工具删除成功")
     return jsonify({'message': 'delete tool success! '}), RESPONSE_STATUS_CODE_SUCCESS
