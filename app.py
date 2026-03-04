@@ -453,15 +453,13 @@ def login():
               example: "登录失败！请检查用户名和密码"
     """
     data = request.get_json()
-    if not data or 'task_id' not in data:
+    if not data:
         return jsonify({'error': 'Missing query parameter'}), 400
 
-    required_fields = ["username", "password"]
-    if not all(field in data for field in required_fields):
-        return jsonify({'message': '缺少必要的字段: username, password'}), 400
-
-    userName = data["username"]
-    password = data["password"]
+    userName = data.get("username") or data.get("userName")
+    password = data.get("password")
+    if userName is None or password is None:
+        return jsonify({'message': 'Missing required fields: username/userName, password'}), 400
     user = userManagerHub.login(userName, password)
     if user.user_id > 0:
         logger.info(f"登录成功")
