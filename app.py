@@ -372,13 +372,11 @@ def register():
     if not data:
         return jsonify({'error': 'Missing query parameter'}), 400
     
-    required_fields = ["username", "password", "confirm"]
-    if not all(field in data for field in required_fields):
-        return jsonify({'message': '缺少必要的字段: username, password, confirm'}), 400
-
-    userName = data["username"]
-    password = data["password"]
-    confirm_password = data["confirm"]
+    userName = data.get("username") or data.get("userName")
+    password = data.get("password")
+    confirm_password = data.get("confirm")
+    if userName is None or password is None or confirm_password is None:
+        return jsonify({'message': 'Missing required fields: username/userName, password, confirm'}), 400
     status_code, message = userManagerHub.create_user(userName, password, confirm_password, DEFAULT_PERMISSIONS)
     if status_code == RESPONSE_STATUS_CODE_SUCCESS:
         logger.info(f"成功创建用户")
