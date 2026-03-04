@@ -284,12 +284,16 @@ def insert_tool():
 
     params = []
     for tmp in params_payload:
+        param_required_fields = ["param_name", "paramType", "param_description", "in_"]
+        missing_param_fields = [field for field in param_required_fields if field not in tmp]
+        if missing_param_fields:
+            return jsonify({'error': f"Missing param fields: {', '.join(missing_param_fields)}"}), 400
         parameter = Parameter(
             name=tmp["param_name"],
             type=tmp["paramType"],
             description=tmp["param_description"],
-            enum=tmp["enum"],
-            required=True,
+            enum=tmp.get("enum", []),
+            required=bool(tmp.get("required", True)),
             in_=tmp["in_"]
         )
         params.append(parameter)
@@ -306,7 +310,7 @@ def insert_tool():
         request_body=params
     )
     toolManager.insert_tools([tool])
-    return jsonify({'message': 'delete tool success! '}), RESPONSE_STATUS_CODE_SUCCESS
+    return jsonify({'message': 'insert tool success! '}), RESPONSE_STATUS_CODE_SUCCESS
 
 
 @app.route('/register_user', methods=['POST'])
