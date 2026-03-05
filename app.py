@@ -260,7 +260,7 @@ def insert_tool():
     """
 
     data = request.get_json()
-    if not data:
+    if not data or 'task_id' not in data:
         return jsonify({'error': 'Missing query parameter'}), 400
 
     params_payload = data.get("params")
