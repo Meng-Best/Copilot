@@ -375,7 +375,7 @@ class ApiPlanningHub:
                 if single_task_result["code"] == TASK_ERROR_CODE:
                     return api_chain, single_task_result["task_description"]
                 if not loop_validate_result:
-                    return api_chain, single_task_result["task_description"]
+                    return api_chain, "循环调用错误"
                 logger.debug(f"[{query}]任务的子任务完成：{task_description}")
                 self.convert_inter_result(task_id, api_chain, f"已处理完成子任务 {task_description}", False)
                 is_complete, task_description = self.generateTaskHub.gen_from_context_task(query, api_chain)
