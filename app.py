@@ -745,7 +745,7 @@ def _process_task(task_id, data):
     except Exception as e:
         taskManager.update_task(task_id, [], [], '获取前端参数失败！', "", True)
         logger.error(f"任务[{task_id}]获取前端参数失败: {e}\n{traceback.format_exc()}")
-        return jsonify({'error': '获取前端参数失败！'}), 400
+        return
 
     if not isCopilot:
         llm = LargeLanguageModel(curr_api_url, curr_api_key)
@@ -758,10 +758,10 @@ def _process_task(task_id, data):
             results = ""
         if results is not None and len(results) != 0:
             taskManager.update_task(task_id, [], [], results, "", True)
-            return jsonify({"nodes": [], "edges": [], "systemOutput": results})
+            return
         else:
             taskManager.update_task(task_id, [], [], results, "", True)
-            return jsonify({"nodes": [], "edges": [], "systemOutput": results}), 400
+            return
     else:
         logger.info(f"Task[{task_id}] started successfully, Go on ===>")
     try:
@@ -782,7 +782,7 @@ def _process_task(task_id, data):
     except Exception as e:
         logger.error(f"任务[{task_id}]处理失败: {e}\n{traceback.format_exc()}")
         taskManager.update_task(task_id, [], [], "任务处理失败，请联系你的系统管理员", "", True)
-        return jsonify({'message': f"任务[{query}]处理失败，任务编号[{task_id}]，请联系你的系统管理员"}), 400
+        return
 
 @app.route('/api_task_status', methods=['POST'])
 @require_permission

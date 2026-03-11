@@ -87,7 +87,7 @@ class ApiPlanningHub:
             index += 1
         if len(nodes) == 1:
             nodes = nodes + sub_nodes
-            self.taskManager.update_task(task_id, nodes, edges, model_output, "正常调用链路", isEnd)
+            self.taskManager.update_task(task_id, nodes, edges, model_output, isSuccess, isEnd)
             return
         for i in range(len(nodes) - 1):
             edges.append(
