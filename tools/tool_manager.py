@@ -171,15 +171,15 @@ class ToolManager:
 
         #进行缓存更新，将缓存中不存在的工具添加到缓存中
         missing_tool_ids = [tool_id for tool_id, tool in zip(tool_ids, cached_tools) if tool is None]
-        cached_tools = [tool for tool in cached_tools if tool is not None]
+        tool_map = {tool.tool_id: tool for tool in cached_tools if tool is not None}
         if missing_tool_ids:
             data = self.get_tools_by_ids_from_mongo(missing_tool_ids)
             for tool in data:
                 with self.cache_lock:
                     self.tool_cache[tool.tool_id] = tool
 
-                cached_tools.append(tool)
-        return cached_tools
+                tool_map[tool.tool_id] = tool
+        return [tool_map[tool_id] for tool_id in tool_ids if tool_id in tool_map]
 
 
 
