@@ -221,6 +221,7 @@ class ToolManager:
         with open(filename, 'r', encoding='utf-8') as file:
             data = json.load(file)
             schemas = data.get("components", {}).get("schemas", {})
+            component_parameters = data.get("components", {}).get("parameters", {})
 
         tools = []
         paths = data.get("paths", {})
@@ -256,9 +257,17 @@ class ToolManager:
 
                 description = api_information.get("description", "")
                 params = []
-                if "parameters" in api_information:
-                    requestParams = api_information["parameters"]
-                    for param in requestParams:
+                path_level_parameters = paths[path].get("parameters", [])
+                operation_level_parameters = api_information.get("parameters", [])
+                requestParams = path_level_parameters + operation_level_parameters
+                if requestParams:
+                    parameter_map = {}
+                    for raw_param in requestParams:
+                        param = raw_param
+                        if "$ref" in raw_param:
+                            param = component_parameters.get(raw_param["$ref"].split("/")[-1], {})
+                        if not param:
+                            continue
                         param_name = param["name"]
                         # logging.info(requestParams[param])
                         param_description = param.get("description", "")
@@ -288,7 +297,8 @@ class ToolManager:
                             in_=in_
 
                         )
-                        params.append(parameter)
+                        parameter_map[(param_name, in_)] = parameter
+                    params.extend(parameter_map.values())
 
                 if "requestBody" in api_information:
                     request_body_schema = (
