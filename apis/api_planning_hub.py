@@ -74,8 +74,8 @@ class ApiPlanningHub:
                     "label": tmptmp["tool"],
                     "group": tmptmp["tool"],
                     "task_description": tmptmp["task_description"],
-                    "params": json.dumps(tmp["param"], ensure_ascii=False),
-                    "result": json.dumps(tmp["result"], ensure_ascii=False),
+                    "params": json.dumps(tmptmp["param"], ensure_ascii=False),
+                    "result": json.dumps(tmptmp["result"], ensure_ascii=False),
                 })
                 edges.append(
                     {
