@@ -119,6 +119,8 @@ class ApiPlanningHub:
             else:
                 if api_chains[i - 1]["result"] == api_response["result"]:
                     number += 1
+                else:
+                    number = 1
                 if number == 3:
                     return False
         return True
