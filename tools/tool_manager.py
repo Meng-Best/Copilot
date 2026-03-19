@@ -301,12 +301,11 @@ class ToolManager:
                     params.extend(parameter_map.values())
 
                 if "requestBody" in api_information:
-                    request_body_schema = (
-                        api_information.get("requestBody", {})
-                        .get("content", {})
-                        .get("application/json", {})
-                        .get("schema", {})
-                    )
+                    request_body_content = api_information.get("requestBody", {}).get("content", {})
+                    request_body_media = request_body_content.get("application/json")
+                    if request_body_media is None and request_body_content:
+                        request_body_media = next(iter(request_body_content.values()))
+                    request_body_schema = request_body_media.get("schema", {}) if request_body_media else {}
                     request_body_ref = request_body_schema.get("$ref")
                     if request_body_ref:
                         requestBody = request_body_ref.split('/')[-1]
