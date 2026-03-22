@@ -145,14 +145,11 @@ class ToolManager:
         """
         tools = []
         for tool_id in tool_ids:
-            try:
-                tool = Tool.objects(tool_id=tool_id).first()
-                if tool is None:
-                    raise ValueError(f"Tool {tool_id} not found")
-                tools.append(tool)
-            except Exception:
+            tool = Tool.objects(tool_id=tool_id).first()
+            if tool is None:
                 logger.warning(f"工具 [ {tool_id} ] 不存在.")
                 continue
+            tools.append(tool)
         return tools
 
 
@@ -196,14 +193,11 @@ class ToolManager:
         """
         tools = []
         for operationId in operationIds:
-            try:
-                tool = Tool.objects(operationId=operationId).first()
-                if tool is None:
-                    raise ValueError(f"Tool operationId {operationId} not found")
-                tools.append(tool)
-            except Exception:
+            tool = Tool.objects(operationId=operationId).first()
+            if tool is None:
                 logger.info(f"Tool with operationId {operationId} does not exist.")
                 continue
+            tools.append(tool)
         return tools
 
 
